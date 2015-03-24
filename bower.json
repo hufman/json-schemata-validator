@@ -1,0 +1,28 @@
+{
+  "name": "multiple-json-schema",
+  "version": "0.1.0",
+  "authors": [
+    "Walter Huf <hufman@gmail.com>"
+  ],
+  "description": "Multiple Json Schema Validator",
+  "main": "app/main.js",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.4",
+    "mithril": "~0.1.30",
+    "requirejs": "~2.1.16",
+    "less": "~2.4.0",
+    "URIjs": "~1.14.2"
+  }
+}
