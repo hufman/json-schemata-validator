@@ -55,11 +55,18 @@ define(['tv4', 'URI'], function (tv4, URI) {
 
 			validator.addSchema(path, schemadata);
 			validator.addSchema(relpath, schemadata);
+			if (schemadata['id']) {
+				validator.addSchema(schemadata['id'], schemadata);
+			}
 		}
 
+		// load the primary schema
 		if (schema.valid() !== true) { return null; }
 		var schemadata = parseJSON(schema.body());
 		if (schemadata === null) { return null; }
+		if (schemadata['id']) {
+			validator.addSchema(schemadata['id'], schemadata);
+		}
 
 		if (typeof(data) === "string" && data.trim().length == 0) {
 			return null;
@@ -70,7 +77,7 @@ define(['tv4', 'URI'], function (tv4, URI) {
 			return e.message;
 		}
 
-		var valid = validator.validate(parseddata, schemadata);
+		var valid = validator.validate(parseddata, schemadata, true);
 		if (valid === true) { return true; }
 		if (valid === false) {
 			return validator.error;
