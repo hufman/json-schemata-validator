@@ -5,9 +5,15 @@ define(['mithril', '../validation'], function (m, v) {
 	var Schema = function(name, body) {
 		this._name = "";
 		this._body = "";
+		this._schema = {
+			name: m.prop("http://json-schema.org/draft-04/schema#"),
+			body: metaschema,
+			valid: m.prop(true)
+		};
 		this.loading = m.prop(false);	// true,false
 		this.error = m.prop(null);	// null,string
 		this.valid = m.prop(null);	// true,false,null
+		this.supplementalSchemas = m.prop([]);
 		this.body(body || "");
 		this.name(name || "");
 	};
@@ -38,6 +44,15 @@ define(['mithril', '../validation'], function (m, v) {
 				window.clearTimeout(this._debounceValidate);
 			}
 			this.validate();
+		},
+		schema: function(schema) {
+			// set the active schema
+			if (arguments.length > 0) {
+				this._schema = schema;
+				this.valid(null);
+				this.scheduleValidate();
+			}
+			return this._schema;
 		},
 		scheduleLoadSchema: function() {
 			if (this._debounceLoad) {
@@ -82,21 +97,22 @@ define(['mithril', '../validation'], function (m, v) {
 			if (!metaschema()) {
 				this.scheduleValidate();
 				return;
-			};
+			}
+			if (this.body() === "") {
+				this.valid(null);
+				this.error(null);
+				return;
+			}
 
-			var fakeMetaSchema = {
-				name: m.prop("http://json-schema.org/draft-04/schema#"),
-				body: metaschema,
-				valid: m.prop(true)
-			};
-			var valid = v.validate([], fakeMetaSchema, this.body());
-			if (valid === true) {
+			var valid = v.validate(this.supplementalSchemas(), this.schema(), this.body());
+			if (valid === true) {		// validated
 				this.valid(true);
 				this.error(null);
 			}
-			if (valid === null) {
+			else if (valid === null) {	// couldn't validate
 				this.valid(null);
 				this.error(null);
+				this.scheduleValidate();
 			}
 			if (typeof(valid) === 'string') {
 				this.valid(false);
