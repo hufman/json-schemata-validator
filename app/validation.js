@@ -1,6 +1,6 @@
 define(['tv4', 'URI'], function (tv4, URI) {
 	var relativize = function(base, absolute) {
-		return URI(absolute).relativeTo(base);
+		return URI(absolute).relativeTo(base).toString();
 	}
 
 	/**
@@ -44,13 +44,13 @@ define(['tv4', 'URI'], function (tv4, URI) {
 
 		// load the supplemental schemas
 		for (var index=0; index<supplemental.length; index++) {
-			var schema = supplemental[index];
-			if (schema.valid() !== true) { return null; }
+			var supschema = supplemental[index];
+			if (supschema.valid() !== true) { return null; }
 
-			var path = schema.name();
+			var path = supschema.name();
 			var relpath = relativize(base, path);
 
-			var schemadata = parseJSON(schema.body());
+			var schemadata = parseJSON(supschema.body());
 			if (schemadata === null) { return null; }
 
 			validator.addSchema(path, schemadata);
