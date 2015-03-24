@@ -73,8 +73,7 @@ define(['tv4', 'URI'], function (tv4, URI) {
 		var valid = validator.validate(parseddata, schemadata);
 		if (valid === true) { return true; }
 		if (valid === false) {
-			var error = validator.error;
-			return JSON.stringify(error);
+			return validator.error;
 		}
 	};
 

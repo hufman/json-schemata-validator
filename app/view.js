@@ -12,6 +12,19 @@ define(['mithril', './controller'], function (m, controller) {
 		if (controller.data.schema() === schema) attrs['checked'] = 'checked';
 		return m("input", attrs);
 	};
+	var errorMessage = function(error) {
+		if (typeof(error) === "string") {	// general error
+			return m("div.error", [error()]);
+		}
+		if (typeof(error) === "object" && error !== null) {	// validation error
+			return m("div.error", [
+			  m("h4", [error.message]),
+			  m("p", ["Data Path: ",error.dataPath]),
+			  m("p", ["Schema Path: ",error.schemaPath])
+			]);
+		}
+		return null;
+	};
 	var renderSingleSchema = function(schema) {
 		return m("div.schema", {class: schemaClass(schema)}, [
 		  m("p", [
@@ -28,7 +41,7 @@ define(['mithril', './controller'], function (m, controller) {
 		    oninput: m.withAttr("value", schema.body.bind(schema)),
 		    onblur: schema.blurBody.bind(schema)
 		  }, schema.body()),
-		  schema.error() ? m("div.error", [schema.error()]) : null
+		  errorMessage(schema.error())
 		]);
 	};
 	var view = function() {
