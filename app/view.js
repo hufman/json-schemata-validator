@@ -33,6 +33,7 @@ define(['mithril', './controller'], function (m, controller) {
 		  m("p.form-group.form-inline", [
 		    m("input.form-control", {
 		      placeholder:"URL",
+		      value: schema.name(),
 		      oninput: m.withAttr("value", schema.name.bind(schema)),
 		      onblur: schema.blurName.bind(schema)
 		    }),
