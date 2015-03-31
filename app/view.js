@@ -10,11 +10,14 @@ define(['mithril', './controller'], function (m, controller) {
 		var attrs = {type: "radio", name: "activeSchema"};
 		attrs['onclick'] = controller.setSchema.bind(this, schema);
 		if (controller.data.schema() === schema) attrs['checked'] = 'checked';
-		return m("input", attrs);
+		return m("label.radio-inline", [
+		  m("input", attrs),
+		  "Primary"
+		]);
 	};
 	var errorMessage = function(error) {
 		if (typeof(error) === "string") {	// general error
-			return m("div.error", [error()]);
+			return m("div.error", [error]);
 		}
 		if (typeof(error) === "object" && error !== null) {	// validation error
 			return m("div.error", [
@@ -27,17 +30,18 @@ define(['mithril', './controller'], function (m, controller) {
 	};
 	var renderSingleSchema = function(schema) {
 		return m("div.schema", {class: schemaClass(schema)}, [
-		  m("p", [
-		    m("input", {
+		  m("p.form-group.form-inline", [
+		    m("input.form-control", {
 		      placeholder:"URL",
 		      oninput: m.withAttr("value", schema.name.bind(schema)),
 		      onblur: schema.blurName.bind(schema)
 		    }),
+		    " ",  // spacer
 		    schemaActiveRadio(schema),
-		    schema.loading() ? "..." : null
+		    schema.loading() ? " ..." : null
 		  ]),
-		  m("textarea", {
-		    cols:"80", rows:"10",
+		  m("textarea.form-control", {
+		    rows:"8",
 		    oninput: m.withAttr("value", schema.body.bind(schema)),
 		    onblur: schema.blurBody.bind(schema)
 		  }, schema.body()),
@@ -46,14 +50,17 @@ define(['mithril', './controller'], function (m, controller) {
 	};
 	var view = function() {
 		return [
-		  m("div#schemas", [
-		    m("h2", "Schemas"),
-		    controller.schemas.map(renderSingleSchema)
-		  ]),
-		  m("button", {onclick: controller.addSchema}, ['Add']),
-		  m("div#data", [
-		    m("h2", "Data"),
-		    renderSingleSchema(controller.data)
+		  m("h1#title", ["JSON Schemata Validator"]),
+		  m("div#container.row", [
+		    m("div#schemas.col-md-6", [
+		      m("h2", "Schemas"),
+		      controller.schemas.map(renderSingleSchema),
+		      m("button.btn.btn-default", {onclick: controller.addSchema}, ['Add Schema'])
+		    ]),
+		    m("div#data.col-md-6", [
+		      m("h2", "Data"),
+		      renderSingleSchema(controller.data)
+		    ])
 		  ])
 		];
 	};

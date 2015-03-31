@@ -114,7 +114,8 @@ define(['mithril', '../validation'], function (m, v) {
 				this.error(null);
 				this.scheduleValidate();
 			}
-			else if (typeof(valid) === 'object') {	// error object
+			else if (typeof(valid) === 'object' ||	// error object
+			         typeof(valid) === 'string') {	// error string
 				this.valid(false);
 				this.error(valid);
 			}
