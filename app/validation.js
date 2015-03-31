@@ -45,7 +45,8 @@ define(['tv4', 'URI'], function (tv4, URI) {
 		// load the supplemental schemas
 		for (var index=0; index<supplemental.length; index++) {
 			var supschema = supplemental[index];
-			if (supschema.valid() !== true) { return null; }
+			if (supschema.valid() === false) { return null; }
+			if (supschema.valid() !== true) { continue; }
 
 			var path = supschema.name();
 			var relpath = relativize(base, path);
