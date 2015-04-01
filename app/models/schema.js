@@ -5,14 +5,16 @@ define(['mithril', '../validation'], function (m, v) {
 	var Schema = function(name, body) {
 		this._name = "";
 		this._body = "";
-		this._schema = {
+		this._schema = {	// the schema to valid self against
+		                	// default to metaschema
 			name: m.prop("http://json-schema.org/draft-04/schema#"),
 			body: metaschema,
 			valid: m.prop(true)
 		};
+		this._debounceBody = false;	// whether we are debouncing a body change
+		this._valid = null;
 		this.loading = m.prop(false);	// true,false
-		this.error = m.prop(null);	// null,string
-		this.valid = m.prop(null);	// true,false,null
+		this.error = m.prop(null);	// null,string,object
 		this.supplementalSchemas = m.prop([]);
 		this.body(body || "");
 		this.name(name || "");
@@ -35,6 +37,7 @@ define(['mithril', '../validation'], function (m, v) {
 			if (arguments.length > 0) {
 				this._body = body;
 				this.valid(null);
+				this._debounceBody = true;
 				this.scheduleValidate();
 			}
 			return this._body;
@@ -87,13 +90,40 @@ define(['mithril', '../validation'], function (m, v) {
 			m.redraw();
 		},
 
-		scheduleValidate: function() {
+		valid: function(valid) {
+			// set whether this schema is valid
+			// whenever it is read, it also checks the supplementary schemas
+			if (arguments.length > 0) {
+				this._valid = valid;
+				if (valid === null && this._body != "") {
+					this.scheduleValidate();
+				}
+			} else {
+				for (var i=0; i < this.supplementalSchemas().length; i++) {
+					if (this.supplementalSchemas()[i]._valid === false) {
+						this.valid(null);
+						break;
+					}
+					// none of the schemas are invalid
+					this.scheduleValidate(10);
+				}
+			}
+			return this._valid;
+		},
+		scheduleValidate: function(delay) {
+			if (this._debounceBody) { return; }
+			delay = delay || 800;
 			if (this._debounceValidate) {
 				window.clearTimeout(this._debounceValidate);
 			}
-			this._debounceValidate = window.setTimeout(this.validate.bind(this), 800);
+			this._debounceValidate = window.setTimeout(this.validate.bind(this), delay);
 		},
 		validate: function() {
+			if (this._debounceValidate) {
+				window.clearTimeout(this._debounceValidate);
+			}
+			this._debounceValidate = null;
+			this._debounceBody = false;
 			if (!metaschema()) {
 				this.scheduleValidate();
 				return;
