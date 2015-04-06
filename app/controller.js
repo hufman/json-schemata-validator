@@ -3,8 +3,18 @@ define(['mithril', './models/schema', 'URI'], function (m, modelSchema, URI) {
 	var metaschema = m.request({method: "GET", url: "metaschema.json", background:true});
 
 	var schemas = [];
-	var addSchema = function() {
+	var addSchema = function(name) {
+		if (name !== null) {
+			for (var i=0; i<schemas.length; i++) {
+				if (name === schemas[i].name()) {
+					return;   // this new schema already exists
+				}
+			}
+		}
 		var newSchema = new modelSchema.Schema();
+		if (name !== null) {
+			newSchema.name(name);
+		}
 		schemas.push(newSchema);
 		return newSchema;
 	};

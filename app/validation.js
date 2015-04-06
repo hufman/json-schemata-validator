@@ -3,6 +3,14 @@ define(['tv4', 'URI'], function (tv4, URI) {
 		return URI(absolute).relativeTo(base).toString();
 	};
 
+	var resolveRelative = function(base, relatives) {
+		var relativeDict = {}
+		relatives.forEach(function(relative) {
+			relativeDict[relative] = URI(relative).absoluteTo(base).toString();
+		});
+		return relativeDict;
+	};
+
 	/**
 	Given a string containing json, parse it to an object
 	Returns the object, or null if invalid
@@ -39,10 +47,11 @@ define(['tv4', 'URI'], function (tv4, URI) {
 	This one indicates that the schema references some missing schemata
 	It will have a .missing property with an array of missing schema urls
 	*/
-	var errorMissing = function(missing) {
+	var errorMissing = function(missing, resolved) {
 		return {
 		  "error": "missing",
-		  "missing": missing
+		  "missing": missing,
+		  "resolved": resolved
 		};
 	};
 
@@ -119,7 +128,8 @@ define(['tv4', 'URI'], function (tv4, URI) {
 
 		var valid = validator.validate(parseddata, schemadata, true);
 		if (validator.missing.length > 0) {
-			return errorMissing(validator.missing);
+			var missingDict = resolveRelative(base, validator.missing);
+			return errorMissing(validator.missing, missingDict);
 		}
 		if (valid === true) { return true; }
 		if (valid === false) {

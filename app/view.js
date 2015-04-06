@@ -27,7 +27,11 @@ define(['mithril', './controller'], function (m, controller) {
 				return m("div.warning", [
 				  m("h4", ["Missing supplementary " + (error.missing.length < 2 ? 'schema' : 'schemata')]),
 				  error.missing.map(function (missing) {
-				    return m("span", [missing])
+				    return m("li", [
+				      m("a", {
+				        href:error.resolved[missing],
+				        onclick:function(e){controller.addSchema(error.resolved[missing]);e.preventDefault()}}, [missing])
+				    ]);
 				  })
 				]);
 			}
