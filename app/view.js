@@ -20,11 +20,24 @@ define(['mithril', './controller'], function (m, controller) {
 			return m("div.error", [error]);
 		}
 		if (typeof(error) === "object" && error !== null) {	// validation error
-			return m("div.error", [
-			  m("h4", [error.message]),
-			  m("p", ["Data Path: ",error.dataPath]),
-			  m("p", ["Schema Path: ",error.schemaPath])
-			]);
+			if (error.error == 'json') {  // has a .message string
+				return m("div.error", [error.message]);
+			}
+			if (error.error == 'missing') {  // has a .missing list
+				return m("div.warning", [
+				  m("h4", ["Missing supplementary " + (error.missing.length < 2 ? 'schema' : 'schemata')]),
+				  error.missing.map(function (missing) {
+				    return m("span", [missing])
+				  })
+				]);
+			}
+			if (error.error == 'schema') {  // has a .result object
+				return m("div.error", [
+				  m("h4", [error.result.message]),
+				  m("p", ["Data Path: ",error.result.dataPath]),
+				  m("p", ["Schema Path: ",error.result.schemaPath])
+				]);
+			}
 		}
 		return null;
 	};

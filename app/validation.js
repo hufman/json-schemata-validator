@@ -1,7 +1,7 @@
 define(['tv4', 'URI'], function (tv4, URI) {
 	var relativize = function(base, absolute) {
 		return URI(absolute).relativeTo(base).toString();
-	}
+	};
 
 	/**
 	Given a string containing json, parse it to an object
@@ -20,13 +20,51 @@ define(['tv4', 'URI'], function (tv4, URI) {
 			if (please_throw) throw e;
 		}
 		return null;
-	}
+	};
+
+	/**
+	Generates an error object to be returned by the validate function
+	This one indicates that the data doesn't parse as json
+	It will have a .message property with a string message for the user
+	*/
+	var errorJson = function(message) {
+		return {
+		  "error": "json",
+		  "message": message
+		};
+	};
+
+	/**
+	Generates an error object to be returned by the validate function
+	This one indicates that the schema references some missing schemata
+	It will have a .missing property with an array of missing schema urls
+	*/
+	var errorMissing = function(missing) {
+		return {
+		  "error": "missing",
+		  "missing": missing
+		};
+	};
+
+	/**
+	Generates an error object to be returned by the validate function
+	This one indicates that the data doesn't validate against the schema
+	It will have a .result object property with a the validation results
+	*/
+	var errorSchema = function(result) {
+		return {
+		  "error": "schema",
+		  "result": result
+		};
+	};
 
 	/**
 	Given a list of supplemental schemas and a primary schema and a data object
 	Add the supplemental schemas to the validator by path, then
 	Validate the data object against the schema
-	Returns true if valid, or an error string if invalid
+	Returns true if valid, or an error object if invalid
+	  An error object has a .error property saying what kind of error
+	  It also has a .message string property for the user
 	Returns null if any of the schemas aren't valid
 	*/
 	var validate = function(supplemental, schema, data) {
@@ -42,7 +80,7 @@ define(['tv4', 'URI'], function (tv4, URI) {
 
 		var base = schema.name();
 
-		// load the supplemental schemas
+		// load the supplemental schemas that the primary may need
 		for (var index=0; index<supplemental.length; index++) {
 			var supschema = supplemental[index];
 			if (supschema.valid() === false) { return null; }
@@ -61,7 +99,7 @@ define(['tv4', 'URI'], function (tv4, URI) {
 			}
 		}
 
-		// load the primary schema
+		// load the primary schema to validate against
 		if (schema.valid() !== true) { return null; }
 		var schemadata = parseJSON(schema.body());
 		if (schemadata === null) { return null; }
@@ -69,19 +107,23 @@ define(['tv4', 'URI'], function (tv4, URI) {
 			validator.addSchema(schemadata['id'], schemadata);
 		}
 
+		// empty data, don't try to validate
 		if (typeof(data) === "string" && data.trim().length == 0) {
 			return null;
 		}
 		try {
 			var parseddata = parseJSON(data, true);
 		} catch (e) {
-			return e.message;
+			return errorJson(e.message);
 		}
 
 		var valid = validator.validate(parseddata, schemadata, true);
+		if (validator.missing.length > 0) {
+			return errorMissing(validator.missing);
+		}
 		if (valid === true) { return true; }
 		if (valid === false) {
-			return validator.error;
+			return errorSchema(validator.error);
 		}
 	};
 
