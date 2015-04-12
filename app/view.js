@@ -1,8 +1,14 @@
 define(['mithril', './controller'], function (m, controller) {
 	var schemaClass = function(schema) {
 		var val = schema.valid()
-		if (val === true) return 'valid';
 		if (val === false) return 'invalid';
+		if (val === true) {
+			if (schema.missing().length == 0) {
+				return 'valid';
+			} else {
+				return 'warning';
+			}
+		}
 		return '';
 	};
 	var schemaActiveRadio = function(schema) {
@@ -23,19 +29,7 @@ define(['mithril', './controller'], function (m, controller) {
 			if (error.error == 'json') {  // has a .message string
 				return m("div.error", [error.message]);
 			}
-			if (error.error == 'missing') {  // has a .missing list
-				return m("div.warning", [
-				  m("h4", ["Missing supplementary " + (error.missing.length < 2 ? 'schema' : 'schemata')]),
-				  error.missing.map(function (missing) {
-				    return m("li", [
-				      m("a", {
-				        href:error.resolved[missing],
-				        onclick:function(e){controller.addSchema(error.resolved[missing]);e.preventDefault()}}, [missing])
-				    ]);
-				  })
-				]);
-			}
-			if (error.error == 'schema') {  // has a .result object
+			if (error.hasOwnProperty('result')) {  // has a .result object
 				return m("div.error", [
 				  m("h4", [error.result.message]),
 				  m("p", ["Data Path: ",error.result.dataPath]),
@@ -44,6 +38,21 @@ define(['mithril', './controller'], function (m, controller) {
 			}
 		}
 		return null;
+	};
+	var renderMissing = function(schema) {
+		if (schema.missing().length == 0) {
+			return [];
+		}
+		return m("div", [
+		  m("h4", ["Missing supplementary " + (schema.missing().length < 2 ? 'schema' : 'schemata')]),
+		  schema.missing().map(function (missing) {
+		    return m("li", [
+		      m("a", {
+		        href:schema.error().resolved[missing],
+		        onclick:function(e){controller.addSchema(schema.error().resolved[missing]);e.preventDefault()}}, [missing])
+		    ]);
+		  })
+		]);
 	};
 	var renderSingleSchema = function(schema) {
 		return m("div.schema", {class: schemaClass(schema)}, [
@@ -63,6 +72,7 @@ define(['mithril', './controller'], function (m, controller) {
 		    oninput: m.withAttr("value", schema.body.bind(schema)),
 		    onblur: schema.blurBody.bind(schema)
 		  }, schema.body()),
+		  renderMissing(schema),
 		  errorMessage(schema.error())
 		]);
 	};

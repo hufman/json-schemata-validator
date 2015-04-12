@@ -47,12 +47,17 @@ define(['tv4', 'URI'], function (tv4, URI) {
 	This one indicates that the schema references some missing schemata
 	It will have a .missing property with an array of missing schema urls
 	*/
-	var errorMissing = function(missing, resolved) {
-		return {
+	var errorMissing = function(missing, resolved, valid, error) {
+		var ret = {
 		  "error": "missing",
 		  "missing": missing,
-		  "resolved": resolved
+		  "resolved": resolved,
+		  "valid": valid
 		};
+		if (error) {
+			ret['result'] = error;
+		}
+		return ret
 	};
 
 	/**
@@ -129,7 +134,7 @@ define(['tv4', 'URI'], function (tv4, URI) {
 		var valid = validator.validate(parseddata, schemadata, true);
 		if (validator.missing.length > 0) {
 			var missingDict = resolveRelative(base, validator.missing);
-			return errorMissing(validator.missing, missingDict);
+			return errorMissing(validator.missing, missingDict, valid, validator.error);
 		}
 		if (valid === true) { return true; }
 		if (valid === false) {

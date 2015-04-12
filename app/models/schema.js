@@ -15,6 +15,7 @@ define(['mithril', '../validation'], function (m, v) {
 		this._valid = null;
 		this.loading = m.prop(false);	// true,false
 		this.error = m.prop(null);	// null,string,object
+		this.missing = m.prop([]);	// an array of missing schemas
 		this.supplementalSchemas = m.prop([]);
 		this.body(body || "");
 		this.name(name || "");
@@ -36,9 +37,9 @@ define(['mithril', '../validation'], function (m, v) {
 		body: function(body) {
 			if (arguments.length > 0) {
 				this._body = body;
-				this.valid(null);
-				this._debounceBody = true;
+				this.clearValidate();
 				this.scheduleValidate();
+				this._debounceBody = true;
 			}
 			return this._body;
 		},
@@ -52,7 +53,7 @@ define(['mithril', '../validation'], function (m, v) {
 			// set the active schema
 			if (arguments.length > 0) {
 				this._schema = schema;
-				this.valid(null);
+				this.clearValidate();
 				this.scheduleValidate();
 			}
 			return this._schema;
@@ -95,16 +96,19 @@ define(['mithril', '../validation'], function (m, v) {
 			// whenever it is read, it also checks the supplementary schemas
 			if (arguments.length > 0) {
 				this._valid = valid;
-				if (valid === null && this._body != "") {
-					this.scheduleValidate();
-				}
 			} else {
+				var allValid = true;
 				for (var i=0; i < this.supplementalSchemas().length; i++) {
-					if (this.supplementalSchemas()[i]._valid === false) {
-						this.valid(null);
+					if (this.supplementalSchemas()[i]._valid !== true) {
+						allValid = false;
 						break;
 					}
-					// none of the schemas are invalid
+				}
+				// none of the schemas are invalid
+				if (! allValid) {
+					this.clearValidate();
+				}
+				if (allValid && this._valid === null) {
 					this.scheduleValidate(10);
 				}
 			}
@@ -118,6 +122,11 @@ define(['mithril', '../validation'], function (m, v) {
 			}
 			this._debounceValidate = window.setTimeout(this.validate.bind(this), delay);
 		},
+		clearValidate: function() {
+			this.valid(null);
+			this.error(null);
+			this.missing([]);
+		},
 		validate: function() {
 			if (this._debounceValidate) {
 				window.clearTimeout(this._debounceValidate);
@@ -129,24 +138,30 @@ define(['mithril', '../validation'], function (m, v) {
 				return;
 			}
 			if (this.body() === "") {
-				this.valid(null);
-				this.error(null);
+				this.clearValidate();
 				return;
 			}
 
+			this.missing([]);
 			var valid = v.validate(this.supplementalSchemas(), this.schema(), this.body());
 			if (valid === true) {		// validated
 				this.valid(true);
 				this.error(null);
 			}
 			else if (valid === null) {	// couldn't validate
-				this.valid(null);
-				this.error(null);
+				this.clearValidate();
 				this.scheduleValidate();
 			}
 			else if (typeof(valid) === 'object' ||	// error object
 			         typeof(valid) === 'string') {	// error string
-				this.valid(false);
+				if (valid.hasOwnProperty('missing')) {
+					this.missing(valid.missing)
+				}
+				if (valid.hasOwnProperty('valid')) {
+					this.valid(valid.valid);
+				} else {
+					this.valid(false);
+				}
 				this.error(valid);
 			}
 			m.redraw();
