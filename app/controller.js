@@ -4,7 +4,7 @@ define(['mithril', './models/schema', 'URI'], function (m, modelSchema, URI) {
 
 	var schemas = [];
 	var addSchema = function(name) {
-		if (name !== null) {
+		if (name != null) {
 			for (var i=0; i<schemas.length; i++) {
 				if (name === schemas[i].name()) {
 					return;   // this new schema already exists
@@ -12,7 +12,7 @@ define(['mithril', './models/schema', 'URI'], function (m, modelSchema, URI) {
 			}
 		}
 		var newSchema = new modelSchema.Schema();
-		if (name !== null) {
+		if (name != null) {
 			newSchema.name(name);
 		}
 		schemas.push(newSchema);
