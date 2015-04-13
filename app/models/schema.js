@@ -1,4 +1,4 @@
-define(['mithril', '../validation'], function (m, v) {
+define(['mithril', '../validation', '../deeplink'], function (m, v, deeplink) {
 
 	var metaschema = m.request({method: "GET", url: "metaschema.json", background:true});
 
@@ -25,6 +25,7 @@ define(['mithril', '../validation'], function (m, v) {
 			if (arguments.length > 0) {
 				this._name = name;
 				this.scheduleLoadSchema();
+				deeplink.schedule();
 			}
 			return this._name;
 		},
@@ -40,6 +41,7 @@ define(['mithril', '../validation'], function (m, v) {
 				this.clearValidate();
 				this.scheduleValidate();
 				this._debounceBody = true;
+				deeplink.schedule();
 			}
 			return this._body;
 		},
