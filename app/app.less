@@ -1,11 +1,13 @@
+/* Mixins */
 .transition (@prop: all, @time: 1s, @ease: linear) {
-    -webkit-transition: @prop @time @ease;
-    -moz-transition: @prop @time @ease;
-    -o-transition: @prop @time @ease;
-    -ms-transition: @prop @time @ease;
-    transition: @prop @time @ease;
+	-webkit-transition: @prop @time @ease;
+	-moz-transition: @prop @time @ease;
+	-o-transition: @prop @time @ease;
+	-ms-transition: @prop @time @ease;
+	transition: @prop @time @ease;
 }
 
+/* Style */
 .schema textarea {
 	.transition(background-color, 0.2s, ease-in);
 }
@@ -24,4 +26,8 @@
 
 .schema {
 	padding-bottom: 15px;
+}
+
+.controls > * {
+	margin-left: 10px;
 }

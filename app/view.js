@@ -11,14 +11,21 @@ define(['mithril', './controller'], function (m, controller) {
 		}
 		return '';
 	};
-	var schemaActiveRadio = function(schema) {
+	var schemaControls = function(schema) {
+		// skip these if we are the data field
 		if (schema === controller.data) return null;
+
 		var attrs = {type: "radio", name: "activeSchema"};
 		attrs['onclick'] = controller.setSchema.bind(this, schema);
 		if (controller.data.schema() === schema) attrs['checked'] = 'checked';
-		return m("label.radio-inline", [
-		  m("input", attrs),
-		  "Primary"
+		return m("span.controls", [
+		  m("label.radio-inline", [
+		    m("input", attrs),
+		    "Primary"
+		  ]),
+		  m("label", [
+		    m("button.btn btn-xs", { onclick: controller.removeSchema.bind(this, schema) }, "Delete")
+		  ])
 		]);
 	};
 	var errorMessage = function(error) {
@@ -64,7 +71,7 @@ define(['mithril', './controller'], function (m, controller) {
 		      onblur: schema.blurName.bind(schema)
 		    }),
 		    " ",  // spacer
-		    schemaActiveRadio(schema),
+		    schemaControls(schema),
 		    schema.loading() ? " ..." : null
 		  ]),
 		  m("textarea.form-control", {
@@ -83,7 +90,7 @@ define(['mithril', './controller'], function (m, controller) {
 		    m("div#schemas.col-md-6", [
 		      m("h2", "Schemas"),
 		      controller.schemas.map(renderSingleSchema),
-		      m("button.btn.btn-default", {onclick: controller.addSchema}, ['Add Schema'])
+		      m("button.btn.btn-default", {onclick: function() {controller.addSchema()}}, ['Add Schema'])
 		    ]),
 		    m("div#data.col-md-6", [
 		      m("h2", "Data"),

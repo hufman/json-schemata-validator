@@ -20,6 +20,19 @@ define(['mithril', './models/schema', 'URI', './deeplink'], function (m, modelSc
 		return newSchema;
 	};
 
+	var removeSchema = function(schema) {
+		var index = schemas.indexOf(schema);
+		if (index > -1) {
+			schemas.splice(index, 1);
+		}
+		if (schemas.length < 1) {
+			addSchema();
+		}
+		if (schemas.indexOf(data.schema()) < 0) {
+			data.schema(schemas[0]);
+		}
+		data.scheduleValidate(10);
+	}
 	var data = new modelSchema.Schema();
 	data.supplementalSchemas = m.prop(schemas);	// automatically updating view
 
@@ -104,6 +117,7 @@ define(['mithril', './models/schema', 'URI', './deeplink'], function (m, modelSc
 		schemas: schemas,
 		addSchema: addSchema,
 		setSchema: setSchema,
+		removeSchema: removeSchema,
 		data: data
 	};
 });
