@@ -13,20 +13,26 @@ define(['mithril', '../validation', '../deeplink'], function (m, v, deeplink) {
 		};
 		this._debounceBody = false;	// whether we are debouncing a body change
 		this._valid = null;
+		this._custom = false;		// whether the user has edited the data
 		this.loading = m.prop(false);	// true,false
 		this.error = m.prop(null);	// null,string,object
 		this.missing = m.prop([]);	// an array of missing schemas
 		this.supplementalSchemas = m.prop([]);
 		this.body(body || "");
+		this._custom = false;		// preloaded data isn't going to be user custom
 		this.name(name || "");
 	};
 	Schema.prototype = {
 		name: function(name) {
 			if (arguments.length > 0) {
 				this._name = name;
-				this.scheduleLoadSchema();
 				deeplink.schedule();
-				if (!this.empty()) {
+				if (!this.custom()) {
+					this._body = '';
+					this.clearValidate();
+					this.scheduleLoadSchema();
+				}
+				if (this.custom()) {
 					this.scheduleValidate(10);
 				}
 			}
@@ -44,6 +50,7 @@ define(['mithril', '../validation', '../deeplink'], function (m, v, deeplink) {
 				this.clearValidate();
 				this.scheduleValidate();
 				this._debounceBody = true;
+				this._custom = true;
 				deeplink.schedule();
 			}
 			return this._body;
@@ -56,6 +63,10 @@ define(['mithril', '../validation', '../deeplink'], function (m, v, deeplink) {
 		},
 		empty: function() {
 			return this._body === "";
+		},
+		custom: function() {
+			// whether the user has changed the data
+			return this._custom && !this.empty();
 		},
 		schema: function(schema) {
 			// set the active schema
@@ -73,7 +84,7 @@ define(['mithril', '../validation', '../deeplink'], function (m, v, deeplink) {
 			this._debounceLoad = window.setTimeout(this.loadSchema.bind(this), 1700);
 		},
 		loadSchema: function() {
-			if (this.name().indexOf('://') < 0 || this.body() != "") {
+			if (this.name().indexOf('://') < 0 || this.custom()) {
 				return;
 			}
 			var self = this;
@@ -86,8 +97,8 @@ define(['mithril', '../validation', '../deeplink'], function (m, v, deeplink) {
 				background: true
 			}).then(function(data) {
 				self.loading(false);
-				if (self.name() == url && self.body() == "") {	// user hasn't started typing
-					self.body(data);
+				if (self.name() == url && !self.custom()) {	// user hasn't started typing
+					self._body = data;
 					self.blurBody();	// validate immediately
 				}
 				m.redraw();
