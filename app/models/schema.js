@@ -26,6 +26,9 @@ define(['mithril', '../validation', '../deeplink'], function (m, v, deeplink) {
 				this._name = name;
 				this.scheduleLoadSchema();
 				deeplink.schedule();
+				if (!this.empty()) {
+					this.scheduleValidate(10);
+				}
 			}
 			return this._name;
 		},
@@ -50,6 +53,9 @@ define(['mithril', '../validation', '../deeplink'], function (m, v, deeplink) {
 				window.clearTimeout(this._debounceValidate);
 			}
 			this.validate();
+		},
+		empty: function() {
+			return this._body === "";
 		},
 		schema: function(schema) {
 			// set the active schema
@@ -101,7 +107,8 @@ define(['mithril', '../validation', '../deeplink'], function (m, v, deeplink) {
 			} else {
 				var allValid = true;
 				for (var i=0; i < this.supplementalSchemas().length; i++) {
-					if (this.supplementalSchemas()[i]._valid !== true) {
+					if (this.supplementalSchemas()[i]._valid !== true &&
+					    this.supplementalSchemas()[i].empty() !== true) {
 						allValid = false;
 						break;
 					}
@@ -139,7 +146,7 @@ define(['mithril', '../validation', '../deeplink'], function (m, v, deeplink) {
 				this.scheduleValidate();
 				return;
 			}
-			if (this.body() === "") {
+			if (this.empty()) {
 				this.clearValidate();
 				return;
 			}
