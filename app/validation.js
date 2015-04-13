@@ -1,6 +1,10 @@
 define(['tv4', 'URI'], function (tv4, URI) {
 	var relativize = function(base, absolute) {
-		return URI(absolute).relativeTo(base).toString();
+		if (absolute.indexOf('://') > -1) {
+			return URI(absolute).relativeTo(base).toString();
+		} else {
+			return absolute;
+		}
 	};
 
 	var resolveRelative = function(base, relatives) {
