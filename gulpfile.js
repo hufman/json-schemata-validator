@@ -13,15 +13,15 @@ gulp.task('bundle', function() {
 	// produce the js
 	return eventStream.merge(
 	  gulp.src('bower_components/almond/almond.js'),
-	  gulp.src(['lib/*.js','app/*.js','app/**/*.js'])
+	  gulp.src(['lib/*.js','app/*.js'])
 	  .pipe(amdOptimize('../app/main', {
 	    'baseUrl':'lib'
 	  }))
 	  .pipe(concat('main.js'))
 	)
-	.pipe(order(['**/almond.js', '**/main.js']))
+	.pipe(order(['**/almond.js', '**.js']))
 	.pipe(concat('main.js'))
-	//.pipe(uglify())
+	.pipe(uglify())
 	.pipe(gulp.dest('dist'));
 });
 
@@ -36,8 +36,13 @@ gulp.task('less', function() {
 	.pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['bundle', 'less'], function() {
+gulp.task('static', function() {
 	gulp.src('index.prod.html')
 	.pipe(rename('index.html'))
-	.pipe(gulp.dest('dist'))
+	.pipe(gulp.dest('dist'));
+	gulp.src('metaschema.json')
+	.pipe(gulp.dest('dist'));
+});
+
+gulp.task('default', ['bundle', 'less', 'static'], function() {
 });
