@@ -1,0 +1,35 @@
+{
+  "name": "json-schemata-validator",
+  "version": "0.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "amd-optimize": "^0.4.3",
+    "bower": "^1.3.12",
+    "event-stream": "^3.3.0",
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-less": "^3.0.2",
+    "gulp-minify-css": "^1.0.0",
+    "gulp-order": "^1.1.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.5.1",
+    "gulp-uglify": "^1.2.0",
+    "uglify": "^0.1.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hufman/json-schemata-validator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hufman/json-schemata-validator/issues"
+  },
+  "homepage": "https://github.com/hufman/json-schemata-validator"
+}

@@ -1,0 +1,4 @@
+1. npm install
+2. node_modules/.bin/bower install
+3. node_modules/.bin/gulp
+4. Compiled output in dist/
