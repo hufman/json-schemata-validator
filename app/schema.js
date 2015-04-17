@@ -1,4 +1,4 @@
-define(['mithril', '../validation', '../deeplink'], function (m, v, deeplink) {
+define(['mithril', './validation', './deeplink'], function (m, v, deeplink) {
 
 	var metaschema = m.request({method: "GET", url: "metaschema.json", background:true});
 

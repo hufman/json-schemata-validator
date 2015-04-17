@@ -1,4 +1,4 @@
-define(['mithril', './models/schema', 'URI', './deeplink'], function (m, modelSchema, URI, deeplink) {
+define(['mithril', './schema', 'URI', './deeplink'], function (m, modelSchema, URI, deeplink) {
 	var init = function() {};
 	var metaschema = m.request({method: "GET", url: "metaschema.json", background:true});
 
