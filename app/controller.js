@@ -95,6 +95,7 @@ define(['mithril', './schema', 'URI', './deeplink', './examples'], function (m, 
 				var newSchema = new modelSchema.Schema();
 				newSchema.name(serialized.schemata[s].name);
 				newSchema.body(serialized.schemata[s].body);
+				newSchema.blurName();
 				newSchema.blurBody();
 				schemas.push(newSchema);
 			}
@@ -102,6 +103,7 @@ define(['mithril', './schema', 'URI', './deeplink', './examples'], function (m, 
 		if (serialized.data) {
 			data.name(serialized.data.name);
 			data.body(serialized.data.body);
+			data.blurName();
 			data.blurBody();
 		}
 		if (serialized.index) {
