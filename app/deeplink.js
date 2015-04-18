@@ -74,7 +74,7 @@ define(['URI'], function (URI) {
 	};
 
 	window.addEventListener('popstate', function(e) {
-		if (serializers.deserializer) {
+		if (serializers.deserializer && e.state) {
 			serializers.deserializer(e.state);
 		}
 	});

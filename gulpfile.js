@@ -42,6 +42,8 @@ gulp.task('static', function() {
 	.pipe(gulp.dest('dist'));
 	gulp.src('metaschema.json')
 	.pipe(gulp.dest('dist'));
+	gulp.src('examples/*')
+	.pipe(gulp.dest('dist/examples'));
 });
 
 gulp.task('default', ['bundle', 'less', 'static'], function() {

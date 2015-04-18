@@ -31,3 +31,18 @@
 .controls > * {
 	margin-left: 10px;
 }
+
+.dropdown {
+	display: inline-block;
+	padding-bottom: 5px;
+}
+.dropdown:hover ul.dropdown-menu {
+	display: block;
+	margin-top: -7px;
+}
+.dropdown:hover ul:after {
+	/* This clears the floating list so that it can be hovered */
+	content: "";
+	clear: both;
+	display: block;
+}

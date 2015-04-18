@@ -1,4 +1,4 @@
-define(['mithril', './schema', 'URI', './deeplink'], function (m, modelSchema, URI, deeplink) {
+define(['mithril', './schema', 'URI', './deeplink', './examples'], function (m, modelSchema, URI, deeplink, examples) {
 	var init = function() {};
 	var metaschema = m.request({method: "GET", url: "metaschema.json", background:true});
 
@@ -119,6 +119,8 @@ define(['mithril', './schema', 'URI', './deeplink'], function (m, modelSchema, U
 		addSchema: addSchema,
 		setSchema: setSchema,
 		removeSchema: removeSchema,
-		data: data
+		data: data,
+		deeplinkDeserialize: deeplinkDeserialize,
+		examples: examples
 	};
 });

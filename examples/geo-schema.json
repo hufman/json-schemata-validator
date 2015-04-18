@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "List of Geo Points",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "points": {
+            "type": "array",
+            "items": {
+                "$ref": "geo.json"
+            }
+        }
+    },
+    "required": ["title", "points"]
+}

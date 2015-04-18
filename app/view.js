@@ -1,4 +1,20 @@
 define(['mithril', './controller'], function (m, controller) {
+	var renderExamplesButton = function(controller) {
+		return m("div.dropdown", [
+		  m("button.btn.btn-default.dropdown-toggle", {"data-toggle":"dropdown"},
+		    "Examples", m("span.caret")
+		  ),
+		  m("ul.dropdown-menu", {"role":"menu"},
+		    controller.examples.map(function (e) {
+		      return m("li", [
+		        m("a", {"role":"menuitem", "href":"#", "onclick": function() {
+		          controller.deeplinkDeserialize(e); }
+		        }, e['title'])
+		      ]);
+		    })
+		  )
+		]);
+	};
 	var schemaClass = function(schema) {
 		var val = schema.valid()
 		if (val === false) return 'invalid';
@@ -86,6 +102,7 @@ define(['mithril', './controller'], function (m, controller) {
 	var view = function() {
 		return [
 		  m("h1#title", ["JSON Schemata Validator"]),
+		  renderExamplesButton(controller),
 		  m("div#container.row", [
 		    m("div#schemas.col-md-6", [
 		      m("h2", "Schemas"),
