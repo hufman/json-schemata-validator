@@ -119,7 +119,8 @@ define(['mithril', './validation', './deeplink'], function (m, v, deeplink) {
 				var allValid = true;
 				for (var i=0; i < this.supplementalSchemas().length; i++) {
 					if (this.supplementalSchemas()[i]._valid !== true &&
-					    this.supplementalSchemas()[i].empty() !== true) {
+					     (this.supplementalSchemas()[i].empty() !== true ||
+					      this.supplementalSchemas()[i].loading())) {
 						allValid = false;
 						break;
 					}

@@ -14,6 +14,7 @@ define(['mithril', './schema', 'URI', './deeplink'], function (m, modelSchema, U
 		var newSchema = new modelSchema.Schema();
 		if (name != null) {
 			newSchema.name(name);
+			newSchema.blurName();	// start loading right away
 		}
 		schemas.push(newSchema);
 		deeplink.schedule();
