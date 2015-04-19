@@ -28,8 +28,14 @@ define(['mithril', './controller'], function (m, controller) {
 		return '';
 	};
 	var schemaControls = function(schema) {
-		// skip these if we are the data field
-		if (schema === controller.data) return null;
+		// skip most of these if we are the data field
+		if (schema === controller.data) {
+			return m("span.controls", [
+			  m("label", [
+			    m("button.btn btn-xs", {onclick: controller.resetData }, "Reset")
+			  ])
+			]);
+		}
 
 		var attrs = {type: "radio", name: "activeSchema"};
 		attrs['onclick'] = controller.setSchema.bind(this, schema);

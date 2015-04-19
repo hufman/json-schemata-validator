@@ -34,7 +34,13 @@ define(['mithril', './schema', 'URI', './deeplink', './examples'], function (m, 
 		}
 		data.scheduleValidate(10);
 		deeplink.schedule();
-	}
+	};
+
+	var resetData = function() {
+		data.name('');
+		data.body('');
+	};
+
 	var data = new modelSchema.Schema();
 	data.supplementalSchemas = m.prop(schemas);	// automatically updating view
 
@@ -128,6 +134,7 @@ define(['mithril', './schema', 'URI', './deeplink', './examples'], function (m, 
 		addSchema: addSchema,
 		setSchema: setSchema,
 		removeSchema: removeSchema,
+		resetData: resetData,
 		data: data,
 		deeplinkDeserialize: deeplinkDeserialize,
 		examples: examples
