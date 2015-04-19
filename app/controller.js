@@ -33,6 +33,7 @@ define(['mithril', './schema', 'URI', './deeplink', './examples'], function (m, 
 			data.schema(schemas[0]);
 		}
 		data.scheduleValidate(10);
+		deeplink.schedule();
 	}
 	var data = new modelSchema.Schema();
 	data.supplementalSchemas = m.prop(schemas);	// automatically updating view

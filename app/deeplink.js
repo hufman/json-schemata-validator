@@ -34,6 +34,22 @@ define(['URI'], function (URI) {
 			'data': serialized.data.name,
 			'index': serialized.index
 		}
+		// trim extra
+		if (serialized.schemata.length < 1) {
+			delete qsdata['schemata'];
+		}
+		if (serialized.schemata.length == 1 &&
+		    serialized.schemata[0].name == '') {
+			delete qsdata['schemata'];
+		}
+		if (serialized.data.name == '') {
+			delete qsdata['data'];
+		}
+		if (typeof(serialized.index) !== 'undefined' &&
+		    serialized.index < 1) {
+			delete qsdata['index'];
+		}
+		tempURI.search("");
 		tempURI.setSearch(qsdata);
 		return tempURI.toString();
 	};
