@@ -8,6 +8,7 @@ var order = require('gulp-order');
 var less = require('gulp-less');
 var minifyCSS = require('gulp-minify-css');
 var sourcemaps = require('gulp-sourcemaps');
+var rev = require('gulp-rev-hash');
 
 gulp.task('bundle', function() {
 	// produce the js
@@ -37,14 +38,18 @@ gulp.task('less', function() {
 });
 
 gulp.task('static', function() {
-	gulp.src('index.prod.html')
-	.pipe(rename('index.html'))
-	.pipe(gulp.dest('dist'));
 	gulp.src('metaschema.json')
 	.pipe(gulp.dest('dist'));
 	gulp.src('examples/*')
 	.pipe(gulp.dest('dist/examples'));
 });
 
-gulp.task('default', ['bundle', 'less', 'static'], function() {
+gulp.task('html', ['bundle', 'less'], function() {
+	gulp.src('index.prod.html')
+	.pipe(rename('index.html'))
+	.pipe(rev({assetsDir: 'dist'}))
+	.pipe(gulp.dest('dist'));
+});
+
+gulp.task('default', ['bundle', 'less', 'static', 'html'], function() {
 });
