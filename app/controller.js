@@ -106,9 +106,15 @@ define(['mithril', './schema', 'URI', './deeplink', './examples'], function (m, 
 			data.blurName();
 			data.blurBody();
 		}
-		if (serialized.index) {
-			if (serialized.index >= 0 && serialized.index < schemas.length) {
-				data.schema(schemas[serialized.data[schema]]);
+		if (schemas.length < 1) {
+			// start with a blank one by default
+			addSchema();
+		}
+		data.schema(schemas[0]);	// default to first
+		if (typeof(serialized.index) !== 'undefined') {
+			var index = parseInt(serialized.index);
+			if (index >= 0 && index < schemas.length) {
+				data.schema(schemas[index]);
 			}
 		}
 	};
