@@ -10,6 +10,13 @@ var minifyCSS = require('gulp-minify-css');
 var sourcemaps = require('gulp-sourcemaps');
 var rev = require('gulp-rev-hash');
 
+var RevAll = require('gulp-rev-all');
+var awspublish = require('gulp-awspublish');
+
+var aws = require('./aws_creds.json');
+var publisher = awspublish.create(aws);
+var headers = {'Cache-Control': 'max-age=315360000, no-transform, public'};
+
 gulp.task('bundle', function() {
 	// produce the js
 	return eventStream.merge(
@@ -51,5 +58,17 @@ gulp.task('html', ['bundle', 'less'], function() {
 	.pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['bundle', 'less', 'static', 'html'], function() {
+gulp.task('dist', ['bundle', 'less', 'static', 'html'], function() {
+});
+
+gulp.task('default', ['dist'], function() {
+});
+
+gulp.task('publish', ['dist'], function() {
+	var revAll = new RevAll({'dontRenameFile':['index.html']});
+	gulp.src('dist/**')
+	.pipe(revAll.revision())
+	.pipe(awspublish.gzip())
+	.pipe(publisher.publish(headers))
+	.pipe(publisher.cache());
 });
