@@ -52,7 +52,7 @@ gulp.task('static', function() {
 });
 
 gulp.task('html', ['bundle', 'less'], function() {
-	gulp.src('index.prod.html')
+	return gulp.src('index.prod.html')
 	.pipe(rename('index.html'))
 	.pipe(rev({assetsDir: 'dist'}))
 	.pipe(gulp.dest('dist'));
@@ -65,10 +65,14 @@ gulp.task('default', ['dist'], function() {
 });
 
 gulp.task('publish', ['dist'], function() {
-	var revAll = new RevAll({'dontRenameFile':['index.html']});
+	var revAll = new RevAll({
+		'dontRenameFile':['index.html', 'metaschema.json', 'examples/.*'],
+		'dontUpdateReference':['metaschema.json', 'examples/.*']
+	});
 	gulp.src('dist/**')
 	.pipe(revAll.revision())
 	.pipe(awspublish.gzip())
 	.pipe(publisher.publish(headers))
-	.pipe(publisher.cache());
+	.pipe(publisher.cache())
+	.pipe(awspublish.reporter());
 });
