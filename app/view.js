@@ -112,7 +112,6 @@ define(['mithril', './controller'], function (m, controller) {
 		    oninput: m.withAttr("value", schema.body.bind(schema)),
 		    onblur: schema.blurBody.bind(schema)
 		  }, schema.body()),
-		  renderMissing(schema),
 		  errorMessage(schema.error())
 		]);
 	};
@@ -125,7 +124,8 @@ define(['mithril', './controller'], function (m, controller) {
 		    m("div#schemas.col-md-6", [
 		      m("h2", "Schemata"),
 		      controller.schemas.map(renderSingleSchema),
-		      m("button.btn.btn-default", {onclick: function() {controller.addSchema()}}, ['Add Schema'])
+		      m("button.btn.btn-default", {onclick: function() {controller.addSchema()}}, ['Add Schema']),
+		      renderMissing(controller.data)
 		    ]),
 		    m("div#data.col-md-6", [
 		      m("h2", "Data"),
