@@ -100,16 +100,16 @@ define(['mithril', './schema', 'URI', './deeplink', './examples'], function (m, 
 			schemas.length = 0;
 			for (var s = 0; s < serialized.schemata.length; s++) {
 				var newSchema = new modelSchema.Schema();
-				newSchema.name(serialized.schemata[s].name);
-				newSchema.body(serialized.schemata[s].body);
+				newSchema.name(serialized.schemata[s].name || '');
+				newSchema.body(serialized.schemata[s].body || '');
 				newSchema.blurName();
 				newSchema.blurBody();
 				schemas.push(newSchema);
 			}
 		}
 		if (serialized.data) {
-			data.name(serialized.data.name);
-			data.body(serialized.data.body);
+			data.name(serialized.data.name || '');
+			data.body(serialized.data.body || '');
 			data.blurName();
 			data.blurBody();
 		}
