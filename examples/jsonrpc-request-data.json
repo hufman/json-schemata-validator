@@ -1,0 +1,10 @@
+{
+    "jsonrpc": "2.0",
+    "id": "1",
+    "method": "Player.Open",
+    "params": {
+        "item": {
+            "file": "Media/Big_Buck_Bunny_1080p.mov"
+        }
+    }
+}

@@ -3,6 +3,14 @@ define(['URI'], function(URI) {
 		return URI(rel).absoluteTo(window.location.href).toString();
 	};
 	return [{
+		'title': 'JSON-RPC',
+		'schemata': [{
+			'name': abs('examples/jsonrpc-request-schema.json')
+		}],
+		'data': {
+			'name': abs('examples/jsonrpc-request-data.json')
+		}
+		},{
 		'title': 'Geo Example',
 		'schemata': [{
 			'name': abs('examples/geo-schema.json'),
