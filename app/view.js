@@ -89,7 +89,12 @@ define(['mithril', './controller'], function (m, controller) {
 		    return m("li", [
 		      m("a", {
 		        href:schema.error().resolved[missing],
-		        onclick:function(e){controller.addSchema(schema.error().resolved[missing]);e.preventDefault()}}, [missing])
+		        onclick:function(e) {
+		          if (!e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey && e.button===0) {
+		            controller.addSchema(schema.error().resolved[missing]);e.preventDefault()
+		          }
+		        }
+		      }, [missing])
 		    ]);
 		  })
 		]);
