@@ -1,4 +1,15 @@
 define(['mithril', './controller'], function (m, controller) {
+	var renderAbout = function() {
+		return m("div.about", [
+		  m("h2", "What is JSON Schema"),
+		  m("p", m("a", {href:"http://json-schema.org"}, "JSON Schema"), " is a way to define the structure of JSON data. Often it is used as documentation of what data an API will return, but it is able to describe any JSON document."),
+		  m("h2", "Validation Tool"),
+		  m("p", "This validation tool provides an easy way to validate a JSON document against a JSON schema. The schemata on the left will be used to validate the data on the right."),
+		  m("p", "JSON Schema supports referencing other JSON Schema documents. This tool uses the URL field of each schema to resolve relative links. It will detect any missing schemata and provide a button to add it to the list."),
+		  m("p", "The address bar will update to track the current state of the application, allowing deeplinking to a specific validator state."),
+		  m("p", "Check out some ", m("a", {href:"http://json-schema.org/examples.html"}, "examples"), " to see how JSON Schema works!")
+		]);
+	};
 	var renderExamplesButton = function(controller) {
 		return m("div.dropdown", [
 		  m("button.btn.btn-default.dropdown-toggle", {"data-toggle":"dropdown"},
@@ -108,10 +119,11 @@ define(['mithril', './controller'], function (m, controller) {
 	var view = function() {
 		return [
 		  m("h1#title", ["JSON Schemata Validator"]),
+		  renderAbout(),
 		  renderExamplesButton(controller),
 		  m("div#container.row", [
 		    m("div#schemas.col-md-6", [
-		      m("h2", "Schemas"),
+		      m("h2", "Schemata"),
 		      controller.schemas.map(renderSingleSchema),
 		      m("button.btn.btn-default", {onclick: function() {controller.addSchema()}}, ['Add Schema'])
 		    ]),
