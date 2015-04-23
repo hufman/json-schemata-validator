@@ -25,7 +25,7 @@ define(['tv4', 'URI'], function (tv4, URI) {
 		}
 		try {
 			var o = JSON.parse(str);
-			if (o && typeof(o) === "object") {
+			if (o !== null) {
 				return o;
 			}
 		} catch (e) {
