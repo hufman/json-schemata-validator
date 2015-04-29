@@ -53,6 +53,7 @@ define(['mithril', './schema', 'URI', './deeplink', './examples'], function (m, 
 	}
 	if (linkedState.data) {
 		data.name(linkedState.data);
+		data.blurName();
 	}
 
 	if (schemas.length < 1) {
