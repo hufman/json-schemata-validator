@@ -45,7 +45,7 @@ gulp.task('less', function() {
 });
 
 gulp.task('static', function() {
-	gulp.src('metaschema.json')
+	gulp.src(['metaschema.json', '*.png', '*.gif'])
 	.pipe(gulp.dest('dist'));
 	gulp.src('examples/*')
 	.pipe(gulp.dest('dist/examples'));
@@ -66,8 +66,8 @@ gulp.task('default', ['dist'], function() {
 
 gulp.task('publish', ['dist'], function() {
 	var revAll = new RevAll({
-		'dontRenameFile':['index.html', 'metaschema.json', 'examples/.*'],
-		'dontUpdateReference':['metaschema.json', 'examples/.*']
+		'dontRenameFile':['index.html', 'metaschema.json', 'examples/.*', '\.gif', '\.png$'],
+		'dontUpdateReference':['metaschema.json', 'examples/.*', '\.gif$', '\.png$']
 	});
 	gulp.src('dist/**')
 	.pipe(revAll.revision())

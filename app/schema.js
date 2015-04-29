@@ -15,7 +15,8 @@ define(['mithril', './validation', './deeplink'], function (m, v, deeplink) {
 		this._valid = null;
 		this._custom = false;		// whether the user has edited the data
 		this.loading = m.prop(false);	// true,false
-		this.error = m.prop(null);	// null,string,object
+		this.error = m.prop(null);	// null,object
+		this.fetchError = m.prop(null);	// null,string about fetch errors
 		this.missing = m.prop([]);	// an array of missing schemas
 		this.supplementalSchemas = m.prop([]);
 		this.body(body || "");
@@ -50,7 +51,9 @@ define(['mithril', './validation', './deeplink'], function (m, v, deeplink) {
 				this.clearValidate();
 				this.scheduleValidate();
 				this._debounceBody = true;
-				this._custom = true;
+				if (body != '') {
+					this._custom = true;
+				}
 				deeplink.schedule();
 			}
 			return this._body;
@@ -63,6 +66,9 @@ define(['mithril', './validation', './deeplink'], function (m, v, deeplink) {
 		},
 		empty: function() {
 			return this._body === "";
+		},
+		remote: function() {
+			return this.name().indexOf('://') >= 0;
 		},
 		custom: function() {
 			// whether the user has changed the data
@@ -84,16 +90,29 @@ define(['mithril', './validation', './deeplink'], function (m, v, deeplink) {
 			this._debounceLoad = window.setTimeout(this.loadSchema.bind(this), 1700);
 		},
 		loadSchema: function() {
-			if (this.name().indexOf('://') < 0 || this.custom()) {
+			if (!this.remote() || this.custom()) {
 				return;
 			}
 			var self = this;
 			var url = this.name();
 			this.loading(true);
+			this.fetchError(null);
 			m.request({
 				method: "GET",
 				url: url,
 				deserialize: function(v){return v},
+				extract: function(xhr, xhrOptions) {
+					if (xhr.status > 200) {
+						var error = "Server returned error " + xhr.status;
+						// put the content in the box
+						self._body = xhr.responseText;
+						self.blurBody();	// validate immediately
+						// show a fancy error message
+						self.fetchError(error);
+						return error;
+					}
+					return xhr.responseText;
+				},
 				background: true
 			}).then(function(data) {
 				self.loading(false);
@@ -104,7 +123,7 @@ define(['mithril', './validation', './deeplink'], function (m, v, deeplink) {
 				m.redraw();
 			}, function(error) {
 				self.loading(false);
-				self.error(error);
+				self.fetchError(error);
 				m.redraw();
 			});
 			m.redraw();
@@ -146,6 +165,7 @@ define(['mithril', './validation', './deeplink'], function (m, v, deeplink) {
 		clearValidate: function() {
 			this.valid(null);
 			this.error(null);
+			this.fetchError(null);
 			this.missing([]);
 		},
 		validate: function() {
@@ -173,8 +193,7 @@ define(['mithril', './validation', './deeplink'], function (m, v, deeplink) {
 				this.clearValidate();
 				this.scheduleValidate();
 			}
-			else if (typeof(valid) === 'object' ||	// error object
-			         typeof(valid) === 'string') {	// error string
+			else if (typeof(valid) === 'object') {	// error object
 				if (valid.hasOwnProperty('missing')) {
 					this.missing(valid.missing)
 				}

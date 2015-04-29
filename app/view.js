@@ -38,6 +38,16 @@ define(['mithril', './controller'], function (m, controller) {
 		}
 		return '';
 	};
+	var renderSchemaNetControls = function(schema) {
+		return m("span.netcontrols", [
+		  schema.remote() ? m("img", {
+		    "src": (schema.loading() ? "loader.gif" : "loaded.gif"),
+		    "onclick": function() {schema.body(''); schema.loadSchema()},
+		    "style": schema.loading() ? "cusor: progress" : "cursor: pointer"
+		  }) : null,
+		  schema.fetchError() ? m("img", {"src": "excl.png", "title": schema.fetchError()}) : null
+		]);
+	};
 	var schemaControls = function(schema) {
 		// skip most of these if we are the data field
 		if (schema === controller.data) {
@@ -109,8 +119,8 @@ define(['mithril', './controller'], function (m, controller) {
 		      onblur: schema.blurName.bind(schema)
 		    }),
 		    " ",  // spacer
+		    renderSchemaNetControls(schema),
 		    schemaControls(schema),
-		    schema.loading() ? " ..." : null
 		  ]),
 		  m("textarea.form-control", {
 		    rows:"8",
