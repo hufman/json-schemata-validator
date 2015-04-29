@@ -100,6 +100,9 @@ define(['mithril', './validation', './deeplink'], function (m, v, deeplink) {
 			m.request({
 				method: "GET",
 				url: url,
+				config: function(xhr) {
+					xhr.setRequestHeader("Accept", "application/json");
+				},
 				deserialize: function(v){return v},
 				extract: function(xhr, xhrOptions) {
 					if (xhr.status > 200) {
