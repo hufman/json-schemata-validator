@@ -11,15 +11,28 @@ define(['mithril', './controller'], function (m, controller) {
 		]);
 	};
 	var renderExamplesButton = function(controller) {
-		return m("div.dropdown", [
+		var startHover = function() {
+			this.className = "dropdown hover";
+		};
+		var endHover = function() {
+			this.className = "dropdown";
+		};
+		return m("div.dropdown", {
+		    "onmouseenter":startHover,
+		    "onmouseleave":endHover,
+		    "ontouchstart":startHover,
+		    "ontouchleave":endHover
+		  }, [
 		  m("button.btn.btn-default.dropdown-toggle", {"data-toggle":"dropdown"},
 		    "Examples", m("span.caret")
 		  ),
 		  m("ul.dropdown-menu", {"role":"menu"},
 		    controller.examples.map(function (e) {
 		      return m("li", [
-		        m("a", {"role":"menuitem", "href":"#", "onclick": function() {
-		          controller.deeplinkDeserialize(e); }
+		        m("a", {"role":"menuitem", "href":"#", "onclick": function(evt) {
+		          endHover.bind(this.parentElement.parentElement.parentElement)();
+		          controller.deeplinkDeserialize(e);
+		          evt.preventDefault(); }
 		        }, e['title'])
 		      ]);
 		    })
