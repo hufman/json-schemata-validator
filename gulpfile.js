@@ -45,7 +45,7 @@ gulp.task('less', function() {
 });
 
 gulp.task('static', function() {
-	gulp.src(['metaschema.json', '*.png', '*.gif'])
+	return gulp.src(['metaschema.json', '*.png', '*.gif'])
 	.pipe(gulp.dest('dist'));
 	gulp.src('examples/*')
 	.pipe(gulp.dest('dist/examples'));
