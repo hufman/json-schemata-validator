@@ -135,11 +135,16 @@ define(['mithril', './controller'], function (m, controller) {
 		    renderSchemaNetControls(schema),
 		    schemaControls(schema),
 		  ]),
-		  m("textarea.form-control", {
-		    rows:"8",
-		    oninput: m.withAttr("value", schema.body.bind(schema)),
-		    onblur: schema.blurBody.bind(schema)
-		  }, schema.body()),
+		  m("div.schema-container", [
+		    m("textarea.form-control", {
+		      rows:"8",
+		      oninput: m.withAttr("value", schema.body.bind(schema)),
+		      onblur: schema.blurBody.bind(schema)
+		    }, schema.body()),
+		    m("span.floating-control", {
+		      onclick: schema.reformat.bind(schema)
+		    }, '{ }')
+		  ]),
 		  errorMessage(schema.error())
 		]);
 	};

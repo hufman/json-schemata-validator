@@ -6,6 +6,11 @@
 	-ms-transition: @prop @time @ease;
 	transition: @prop @time @ease;
 }
+.rounded(@radius: 2px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
 
 /* Style */
 body {
@@ -54,4 +59,23 @@ body {
 	content: "";
 	clear: both;
 	display: block;
+}
+
+.schema-container {
+	position: relative;
+}
+.schema-container .floating-control {
+	.transition(opacity, 0.2s, ease-in);
+	opacity: 0;
+	cursor: pointer;
+	position: absolute;
+	right: 20px;
+	top: 5px;
+	padding: 1px 7px 3px 7px;
+	background: #ddf;
+	border: 1px solid #333;
+	.rounded();
+}
+.schema-container:hover .floating-control {
+	opacity: 0.8;
 }

@@ -64,6 +64,13 @@ define(['mithril', './validation', './deeplink'], function (m, v, deeplink) {
 			}
 			this.validate();
 		},
+		reformat: function() {
+			try {
+				var obj = JSON.parse(this._body);
+				var str = JSON.stringify(obj, null, 4);
+				this._body = str;
+			} catch (e) {}
+		},
 		empty: function() {
 			return this._body === "";
 		},
