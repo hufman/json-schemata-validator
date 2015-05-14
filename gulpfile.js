@@ -45,9 +45,9 @@ gulp.task('less', function() {
 });
 
 gulp.task('static', function() {
-	return gulp.src(['metaschema.json', '*.png', '*.gif'])
+	gulp.src(['metaschema.json', '*.png', '*.gif'])
 	.pipe(gulp.dest('dist'));
-	gulp.src('examples/*')
+	return gulp.src('examples/*')
 	.pipe(gulp.dest('dist/examples'));
 });
 
